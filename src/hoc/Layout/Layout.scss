@@ -1,0 +1,27 @@
+@import '~antd/dist/antd.css';
+
+.wrapper {
+  min-height: 100vh;
+  .sidbar {
+    .hamburger {
+      color: #bbbbbb;
+      position: absolute;
+      right: 0;
+      font-size: 25px;
+      margin: 12px;
+    }
+    .admin-navigation{
+      margin-top: 300px;
+    }
+  }
+  .container {
+
+    .main-content {
+      display: flex;
+      align-content:center;
+      justify-content: space-around;
+      margin: 0 16px;
+    }
+  }
+}
+
