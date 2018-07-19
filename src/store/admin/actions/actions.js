@@ -10,7 +10,7 @@ export const setData = (nameSpace, serviceName, data) => {
   return {
     type: adminActionTypes.SET_DATA,
     data,
-    nameSpace, serviceName
+    nameSpace,serviceName
   };
 };
 export const setNewItem = (nameSpace, serviceName, item) => {
@@ -24,7 +24,7 @@ export const setNewItem = (nameSpace, serviceName, item) => {
 export const setQuery = (nameSpace, serviceName, query) => {
   return {
     type: adminActionTypes.SET_QUERY,
-    query: query,
+    query,
     nameSpace, serviceName
   };
 };
