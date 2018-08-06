@@ -15,7 +15,7 @@ import notificationHandler from '../../../hoc/NotificationHandler/NotificationHa
 
 import Aux from '../../../hoc/Helper/Helper';
 
-import * as adminPostsActions from '../../../store/admin/actions/actions';
+import * as adminActions from '../../../store/admin/actions/actions';
 import { services } from '../../../feathers';
 
 import classes from './Posts.scss';
@@ -26,26 +26,22 @@ const { RangePicker } = DatePicker;
 const thisServiceName = 'posts';
 const thisNameSpace = 'posts';
 
-class adminPosts extends Component {
+class adminListView extends Component {
   componentDidMount() {
     this.props.onFindData(thisNameSpace, thisServiceName);
-    services.posts.on('created', post => {
+    services[thisServiceName].on('created', post => {
       this.props.onCreateItemSuccess(thisNameSpace, thisServiceName, post);
     });
-    services.posts.on('removed', item => {
+    services[thisServiceName].on('removed', item => {
       this.props.onDeleteItemSuccess(thisNameSpace, thisServiceName, item);
     });
   }
   componentWillUnmount() {
-    services.posts.removeListener('created');
-    services.posts.removeListener('removed');
+    services[thisServiceName].removeListener('created');
+    services[thisServiceName].removeListener('removed');
   }
 
   componentWillMount() {}
-
-  postSelectedHandler = id => {
-    this.props.history.push('/blog/' + id);
-  };
 
   tableChangeHandler = (pagination, filters, sorter) => {
     const query = {
@@ -63,7 +59,7 @@ class adminPosts extends Component {
     this.props.onDeleteItem(thisNameSpace, thisServiceName, record);
   };
   itemEditHandler = (e, record) => {
-    this.props.history.push('posts/edit/' + record.id);
+    this.props.history.push(thisNameSpace + '/edit/' + record.id);
   };
   render() {
     const columns = [
@@ -121,16 +117,16 @@ class adminPosts extends Component {
       }
     ];
 
-    let posts = <p> Err</p>;
+    let listView = <p> Err</p>;
 
-    if (!this.props.error && this.props.posts) {
-      posts = (
+    if (!this.props.error && this.props.datasource) {
+      listView = (
         <Table
           rowKey={record => record.id}
           columns={columns}
           pagination={this.props.pagination}
           loading={this.props.loading}
-          dataSource={this.props.posts}
+          dataSource={this.props.datasource}
           onChange={this.tableChangeHandler}
         />
       );
@@ -142,7 +138,7 @@ class adminPosts extends Component {
             <RangePicker />
           </Col>
 
-          <Col span={24}>{posts}</Col>
+          <Col span={24}>{listView}</Col>
         </Row>
       </Aux>
     );
@@ -151,39 +147,33 @@ class adminPosts extends Component {
 
 const mapStateToProps = state => {
   return {
-    posts: state.admin.posts.datasource,
-    pagination: state.admin.posts.pagination,
-    query: state.admin.posts.query,
-    loading: state.admin.posts.loading,
-    error: state.admin.posts.error,
-    notification: state.admin.posts.notification
+    datasource: state.admin[thisNameSpace].datasource,
+    pagination: state.admin[thisNameSpace].pagination,
+    query: state.admin[thisNameSpace].query,
+    loading: state.admin[thisNameSpace].loading,
+    error: state.admin[thisNameSpace].error,
+    notification: state.admin[thisNameSpace].notification
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onFindData: (nameSpace, serviceName) =>
-      dispatch(adminPostsActions.findData(nameSpace, serviceName)),
+      dispatch(adminActions.findData(nameSpace, serviceName)),
     onDeleteItem: (nameSpace, serviceName, item) =>
-      dispatch(adminPostsActions.deleteItem(nameSpace, serviceName, item)),
+      dispatch(adminActions.deleteItem(nameSpace, serviceName, item)),
     onDeleteItemSuccess: (nameSpace, serviceName, item) =>
-      dispatch(
-        adminPostsActions.deleteItemSuccess(nameSpace, serviceName, item)
-      ),
+      dispatch(adminActions.deleteItemSuccess(nameSpace, serviceName, item)),
     onSetPagination: (nameSpace, serviceName, pagination) =>
-      dispatch(
-        adminPostsActions.setPagination(nameSpace, serviceName, pagination)
-      ),
+      dispatch(adminActions.setPagination(nameSpace, serviceName, pagination)),
     onSetQuery: (nameSpace, serviceName, query) =>
-      dispatch(adminPostsActions.setQuery(nameSpace, serviceName, query)),
+      dispatch(adminActions.setQuery(nameSpace, serviceName, query)),
     onCreateItemSuccess: (nameSpace, serviceName, post) =>
-      dispatch(
-        adminPostsActions.createItemSuccess(nameSpace, serviceName, post)
-      )
+      dispatch(adminActions.createItemSuccess(nameSpace, serviceName, post))
   };
 };
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(notificationHandler(adminPosts));
+)(notificationHandler(adminListView));
