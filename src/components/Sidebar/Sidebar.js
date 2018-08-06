@@ -15,13 +15,21 @@ const navItems = [
     title: "Posts",
     icon: "file-text",
     link: "/admin/posts",
-    show: "authenticated"
-  },
-  {
-    title: "Comments",
-    icon: "message",
-    link: "/admin/comments",
-    show: "authenticated"
+    show: "authenticated",
+    subMenu:[
+      {
+        title: "Posts",
+        icon: "file-text",
+        link: "/admin/posts",
+        show: "authenticated"
+      },
+      {
+        title: "Comments",
+        icon: "message",
+        link: "/admin/comments",
+        show: "authenticated"
+      },
+    ]
   },
   {
     title: "Users",
