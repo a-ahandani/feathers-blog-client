@@ -1,10 +1,10 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const navigatonItem = props => (
-
-    <NavLink to={props.link}>{props.children}</NavLink >
-
+  <Link replace to={props.link}>
+    {props.children}
+  </Link>
 );
 
 export default navigatonItem;

@@ -1,8 +1,7 @@
-import { combineReducers } from "redux";
+import { combineReducers } from 'redux';
 
-import adminPostsReducer from "./reducers";
-
-
+import adminReducer from './reducers';
+//import adminItemsReducer from "./items-reducer";
 
 function createNamedWrapperReducer(reducerFunction, reducerName) {
   return (state, action) => {
@@ -10,20 +9,16 @@ function createNamedWrapperReducer(reducerFunction, reducerName) {
     const isInitializationCall = state === undefined;
     if (nameSpace !== reducerName && !isInitializationCall) {
       return state;
-
     } else {
       return reducerFunction(state, action);
-
     }
-
   };
 }
 
-
 const index = combineReducers({
-  posts:createNamedWrapperReducer(adminPostsReducer,"posts"),
-  post:createNamedWrapperReducer(adminPostsReducer,"post"),
-  users:createNamedWrapperReducer(adminPostsReducer,"users")
+  posts: createNamedWrapperReducer(adminReducer, 'posts'),
+  post: createNamedWrapperReducer(adminReducer, 'post'),
+  users: createNamedWrapperReducer(adminReducer, 'users')
 });
 
 export default index;

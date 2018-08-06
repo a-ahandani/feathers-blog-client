@@ -1,8 +1,8 @@
-import * as commonTypes from "../actions/types";
+import * as commonTypes from '../actions/types';
 
 const initialState = {
-
   datasource: null,
+  selectedItem: null,
   notification: null,
   pagination: {
     total: null,
@@ -14,67 +14,83 @@ const initialState = {
     $skip: 0,
     $limit: 10,
     $sort: {
-      "createdAt": -1
+      createdAt: -1
     }
   },
   loading: false,
   error: false,
-  notification: null
-
+  notification: null,
+  isNew: false,
+  redirectPath: null
 };
 
 const reducer = (state = initialState, action) => {
-
   switch (action.type) {
-
     case commonTypes.FETCH_DATA_START:
       return {
         ...state,
         loading: true,
         error: false,
-        notification: null
+        notification: null,
+        redirectPath: null
       };
-    case commonTypes.SET_DATA:
+    case commonTypes.FIND_DATA_SUCCESS:
       return {
         ...state,
         datasource: action.data,
         loading: false,
         error: false,
+        isNew: false,
+        redirectPath: null,
+        notification: null
+      };
+    case commonTypes.GET_DATA_SUCCESS:
+      return {
+        ...state,
+        selectedItem: action.data,
+        loading: false,
+        error: false,
+        isNew: false,
+        redirectPath: null,
         notification: null
       };
     case commonTypes.SET_QUERY:
-    console.log("reducer->",action.query)
       return {
         ...state,
         query: action.query,
-        notification: null
+        notification: null,
+        redirectPath: null
       };
-    case commonTypes.SET_NEW_ITEM:
-      const updatePosts = [
-        action.item,
-        ...state.datasource
-      ];
+    case commonTypes.CREATE_ITEM_SUCCESS:
+      const updatePosts = state.datasource
+        ? [action.item, ...state.datasource]
+        : null;
       return {
         ...state,
         datasource: updatePosts,
+        selectedItem: action.item,
         loading: false,
         error: false,
-        notification: null
+        redirectPath:
+          '/admin/' + action.serviceName + '/edit/' + action.item.id,
+        notification: {
+          type: 'success',
+          message: 'Item added!'
+        }
       };
+
     case commonTypes.FETCH_DATA_FAILED:
       return {
         ...state,
         loading: false,
         error: true,
         notification: {
-          type: "error",
+          type: 'error',
           message: action.error.message
         }
       };
     case commonTypes.DELETE_ITEM_SUCCESS:
-      const datasourceCopy = [
-        ...state.datasource
-      ];
+      const datasourceCopy = [...state.datasource];
       const updatedPosts = [];
       datasourceCopy.map((item, index) => {
         if (item.id !== action.item.id) {
@@ -87,9 +103,33 @@ const reducer = (state = initialState, action) => {
         loading: false,
         error: false,
         notification: {
-          type: "success",
+          type: 'success',
           message: 'Item deleted!'
         }
+      };
+    case commonTypes.UPDATE_ITEM_SUCCESS:
+      return {
+        ...state,
+        selectedItem: action.item,
+        loading: false,
+        error: false,
+        isNew: false,
+        redirectPath: null,
+        notification: {
+          type: 'success',
+          message: 'Item updated!'
+        }
+      };
+
+    case commonTypes.SET_NEW:
+      return {
+        ...state,
+        selectedItem: null,
+        loading: false,
+        error: false,
+        isNew: false,
+        redirectPath: null,
+        notification: null
       };
     case commonTypes.SET_PAGINATION:
       return {
@@ -100,8 +140,6 @@ const reducer = (state = initialState, action) => {
     default:
       return state;
   }
-
 };
-
 
 export default reducer;
