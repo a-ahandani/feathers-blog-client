@@ -17,7 +17,7 @@ import classes from './PostEdit.scss';
 const ButtonGroup = Button.Group;
 const thisServiceName = 'posts';
 const thisNameSpace = 'post';
-class adminPostEdit extends Component {
+class adminEditor extends Component {
   componentDidMount() {
     let query = null;
     if (this.props.match.params.id) {
@@ -57,13 +57,13 @@ class adminPostEdit extends Component {
     const FormItem = Form.Item;
     const { getFieldDecorator } = this.props.form;
 
-    let Post = null;
-    let postRedirect = null;
+    let EDITOR = null;
+    let editorRedirect = null;
 
     if (this.props.redirectPath) {
-      postRedirect = <Redirect to={this.props.redirectPath} />;
+      editorRedirect = <Redirect to={this.props.redirectPath} />;
     }
-    Post = (
+    EDITOR = (
       <Form onSubmit={this.submitHandler}>
         <FormItem label="Title:">
           {getFieldDecorator('title', {
@@ -86,8 +86,8 @@ class adminPostEdit extends Component {
     return (
       <Aux>
         <div className={'post-edit'}>
-          {postRedirect}
-          {Post}
+          {editorRedirect}
+          {EDITOR}
         </div>
       </Aux>
     );
@@ -96,7 +96,7 @@ class adminPostEdit extends Component {
 
 const mapStateToProps = state => {
   return {
-    post: state.admin[thisNameSpace].selectedItem,
+    selectedItem: state.admin[thisNameSpace].selectedItem,
     loading: state.admin[thisNameSpace].loading,
     error: state.admin[thisNameSpace].error,
     isNew: state.admin[thisNameSpace].isNew,
@@ -127,15 +127,15 @@ const WrappedWriteForm = Form.create({
     return {
       title: Form.createFormField({
         ...props.title,
-        value: props.post ? props.post.title : null
+        value: props.selectedItem ? props.selectedItem.title : null
       }),
       body: Form.createFormField({
         ...props.body,
-        value: props.post ? props.post.body : null
+        value: props.selectedItem ? props.selectedItem.body : null
       })
     };
   }
-})(adminPostEdit);
+})(adminEditor);
 export default connect(
   mapStateToProps,
   mapDispatchToProps
