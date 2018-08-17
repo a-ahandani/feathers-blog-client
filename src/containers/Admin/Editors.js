@@ -2,13 +2,13 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
 import { Redirect } from 'react-router-dom';
-import notificationHandler from '../../../hoc/NotificationHandler/NotificationHandler';
+import notificationHandler from '../../hoc/NotificationHandler/NotificationHandler';
 import 'react-quill/dist/quill.snow.css';
-import EditorForm from '../../../components/Admin/EditForm';
+import EditorForm from '../../components/Admin/EditForm';
 
-import Aux from '../../../hoc/Helper/Helper';
+import Aux from '../../hoc/Helper/Helper';
 
-import * as adminActions from '../../../store/admin/actions/actions';
+import * as adminActions from '../../store/admin/actions/actions';
 
 class adminEditor extends Component {
   componentDidMount() {

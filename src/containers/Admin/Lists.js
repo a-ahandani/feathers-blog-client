@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import Aux from '../../../hoc/Helper/Helper';
-import notificationHandler from '../../../hoc/NotificationHandler/NotificationHandler';
+import Aux from '../../hoc/Helper/Helper';
+import notificationHandler from '../../hoc/NotificationHandler/NotificationHandler';
 
-import * as adminActions from '../../../store/admin/actions/actions';
+import * as adminActions from '../../store/admin/actions/actions';
 //import { services } from "../../../feathers";
 
-import Datagrid from '../../../components/Admin/Datagrid';
+import Datagrid from '../../components/Admin/Datagrid';
 
 class adminListView extends Component {
   componentDidMount() {
@@ -21,39 +21,12 @@ class adminListView extends Component {
     };
     this.props.onSetQuery(this.props.nameSpace, this.props.serviceName, query);
     this.props.onFindData(this.props.nameSpace, this.props.serviceName);
-    // services[this.props.serviceName].on("created", post => {
-    //   this.props.onCreateItemSuccess(this.props.nameSpace, this.props.serviceName, post);
-    // });
-    // services[this.props.serviceName].on("removed", item => {
-    //   this.props.onDeleteItemSuccess(this.props.nameSpace, this.props.serviceName, item);
-    // });
   }
-  componentWillUnmount() {
-    // services[this.props.serviceName].removeListener("created");
-    // services[this.props.serviceName].removeListener("removed");
-  }
+  componentWillUnmount() {}
   render() {
     return (
       <Aux>
-        <Datagrid
-          serviceName={this.props.serviceName}
-          nameSpace={this.props.nameSpace}
-          // history={this.props.history}
-          // schema={this.props.schema}
-          // datasource={this.props.datasource}
-          // pagination={this.props.pagination}
-          // query={this.props.query}
-          // loading={this.props.loading}
-          // error={this.props.error}
-          // notification={this.props.notification}
-          // onFindData={this.props.onFindData}
-          // onDeleteItem={this.props.onDeleteItem}
-          // onDeleteItemSuccess={this.props.onDeleteItemSuccess}
-          // onSetPagination={this.props.onSetPagination}
-          // onSetQuery={this.props.onSetQuery}
-          // onCreateItemSuccess={this.props.onCreateItemSuccess}
-          {...this.props}
-        />
+        <Datagrid {...this.props} />
       </Aux>
     );
   }

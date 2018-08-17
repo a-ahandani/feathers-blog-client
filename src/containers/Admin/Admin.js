@@ -2,14 +2,8 @@ import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import classes from './Admin.scss';
 
-import ListsContainer from './Posts/Posts';
-import EditorContainer from './Posts/PostEdit';
-
-// import Users from "./Users/Users";
-// import UserEdit from "./Users/UserEdit";
-
-// import Files from "./Files/Files";
-// import FileEdit from "./Files/FileEdit";
+import ListsContainer from './Lists';
+import EditorContainer from './Editors';
 
 const filesSchema = [
   {

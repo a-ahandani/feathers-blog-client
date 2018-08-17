@@ -18,12 +18,12 @@ const notificationHandler = WrappedComponent => {
     componentDidMount() {
       console.log('notf props', this.props);
       services[this.props.serviceName].on('created', data => {
-        console.log('created', data);
-        // this.props.onCreateItemSuccess(
-        //   this.props.nameSpace,
-        //   this.props.serviceName,
-        //   data
-        // );
+        //console.log('created', data);
+        this.props.onCreateItemSuccess(
+          this.props.nameSpace,
+          this.props.serviceName,
+          data
+        );
         this.openNotificationWithIcon('success', 'created');
       });
       services[this.props.serviceName].on('removed', item => {
