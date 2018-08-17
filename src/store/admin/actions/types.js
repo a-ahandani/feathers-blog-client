@@ -20,3 +20,5 @@ export const DELETE_ITEM = 'DELETE_ITEM';
 export const DELETE_ITEM_SUCCESS = 'DELETE_ITEM_SUCCESS';
 
 export const SET_NEW = 'SET_NEW';
+export const SET_LOCK = 'SET_LOCK';
+export const EDITOR_CHANGED = 'EDITOR_CHANGED';

@@ -5,9 +5,12 @@ import Aux from '../../../hoc/Helper/Helper';
 import notificationHandler from '../../../hoc/NotificationHandler/NotificationHandler';
 
 import * as adminActions from '../../../store/admin/actions/actions';
-//import { services } from "../../../feathers";
+import { services } from '../../../feathers';
 
 import Datagrid from '../../../components/Admin/Datagrid';
+
+const thisServiceName = 'files';
+const thisNameSpace = 'files';
 
 class adminListView extends Component {
   componentDidMount() {
@@ -19,25 +22,23 @@ class adminListView extends Component {
         createdAt: -1
       }
     };
-    this.props.onSetQuery(this.props.nameSpace, this.props.serviceName, query);
-    this.props.onFindData(this.props.nameSpace, this.props.serviceName);
-    // services[this.props.serviceName].on("created", post => {
-    //   this.props.onCreateItemSuccess(this.props.nameSpace, this.props.serviceName, post);
-    // });
-    // services[this.props.serviceName].on("removed", item => {
-    //   this.props.onDeleteItemSuccess(this.props.nameSpace, this.props.serviceName, item);
+    this.props.onSetQuery(thisNameSpace, thisServiceName, query);
+    this.props.onFindData(thisNameSpace, thisServiceName);
+    services[thisServiceName].on('created', data => {
+      this.props.onCreateItemSuccess(thisNameSpace, thisServiceName, data);
+    });
+    // services[thisServiceName].on("removed", item => {
+    //   this.props.onDeleteItemSuccess(thisNameSpace, thisServiceName, item);
     // });
   }
   componentWillUnmount() {
-    // services[this.props.serviceName].removeListener("created");
-    // services[this.props.serviceName].removeListener("removed");
+    // services[thisServiceName].removeListener("created");
+    // services[thisServiceName].removeListener("removed");
   }
   render() {
     return (
       <Aux>
         <Datagrid
-          serviceName={this.props.serviceName}
-          nameSpace={this.props.nameSpace}
           // history={this.props.history}
           // schema={this.props.schema}
           // datasource={this.props.datasource}
@@ -46,6 +47,7 @@ class adminListView extends Component {
           // loading={this.props.loading}
           // error={this.props.error}
           // notification={this.props.notification}
+          // onSelectItem={this.props.onSelectItem}
           // onFindData={this.props.onFindData}
           // onDeleteItem={this.props.onDeleteItem}
           // onDeleteItemSuccess={this.props.onDeleteItemSuccess}
@@ -53,20 +55,22 @@ class adminListView extends Component {
           // onSetQuery={this.props.onSetQuery}
           // onCreateItemSuccess={this.props.onCreateItemSuccess}
           {...this.props}
+          serviceName={thisServiceName}
+          nameSpace={thisNameSpace}
         />
       </Aux>
     );
   }
 }
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = state => {
   return {
-    datasource: state.admin[props.nameSpace].datasource,
-    pagination: state.admin[props.nameSpace].pagination,
-    query: state.admin[props.nameSpace].query,
-    loading: state.admin[props.nameSpace].loading,
-    error: state.admin[props.nameSpace].error,
-    notification: state.admin[props.nameSpace].notification
+    datasource: state.admin[thisNameSpace].datasource,
+    pagination: state.admin[thisNameSpace].pagination,
+    query: state.admin[thisNameSpace].query,
+    loading: state.admin[thisNameSpace].loading,
+    error: state.admin[thisNameSpace].error,
+    notification: state.admin[thisNameSpace].notification
   };
 };
 

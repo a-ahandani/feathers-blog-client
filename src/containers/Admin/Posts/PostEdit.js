@@ -1,142 +1,84 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
 import { Redirect } from 'react-router-dom';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import notificationHandler from '../../../hoc/NotificationHandler/NotificationHandler';
-import ReactQuill from 'react-quill'; // ES6
-import 'react-quill/dist/quill.snow.css'; // ES6
+import 'react-quill/dist/quill.snow.css';
+import EditorForm from '../../../components/Admin/EditForm';
 
 import Aux from '../../../hoc/Helper/Helper';
-import { updateObject } from '../../../shared/utility';
 
-import * as commonActions from '../../../store/admin/actions/actions';
-import { services } from '../../../feathers';
+import * as adminActions from '../../../store/admin/actions/actions';
 
-import classes from './PostEdit.scss';
-
-const ButtonGroup = Button.Group;
-const thisServiceName = 'posts';
-const thisNameSpace = 'post';
 class adminEditor extends Component {
   componentDidMount() {
     let query = null;
-    if (this.props.match.params.id) {
+    if (this.props.match && this.props.match.params.id) {
       query = {
         id: this.props.match.params.id
       };
-      this.props.onSetQuery(thisNameSpace, thisServiceName, query);
-      this.props.onGetData(thisNameSpace, thisServiceName);
+      this.props.onSetQuery(
+        this.props.nameSpace,
+        this.props.serviceName,
+        query
+      );
+      this.props.onGetData(this.props.nameSpace, this.props.serviceName);
     } else {
-      this.props.onSetNew(thisNameSpace, thisServiceName);
+      this.props.onSetNew(this.props.nameSpace, this.props.serviceName);
     }
   }
 
-  componentWillUnmount() {}
-
-  componentWillUpdate() {}
-
-  componentWillMount() {}
-
-  submitHandler = event => {
-    event.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err && this.props.match.params.id) {
-        this.props.onUpdateItem(
-          thisNameSpace,
-          thisServiceName,
-          this.props.match.params.id,
-          values
-        );
-      } else if (!err) {
-        this.props.onCreateItem(thisNameSpace, thisServiceName, values);
-      }
-    });
-  };
-
   render() {
-    const FormItem = Form.Item;
-    const { getFieldDecorator } = this.props.form;
-
-    let EDITOR = null;
     let editorRedirect = null;
 
-    if (this.props.redirectPath) {
+    if (!this.props.offRoute && this.props.redirectPath) {
       editorRedirect = <Redirect to={this.props.redirectPath} />;
     }
-    EDITOR = (
-      <Form onSubmit={this.submitHandler}>
-        <FormItem label="Title:">
-          {getFieldDecorator('title', {
-            rules: [{ required: true, message: 'Please write a title!' }]
-          })(<Input size="large" placeholder="Title" />)}
-        </FormItem>
-        <FormItem label="Body">
-          {getFieldDecorator('body', {
-            rules: [{ required: true, message: 'Please write something...' }]
-          })(<ReactQuill />)}
-        </FormItem>
-        <FormItem>
-          <Button type="primary" htmlType="submit" loading={this.props.loading}>
-            Submit!
-          </Button>
-        </FormItem>
-      </Form>
-    );
 
     return (
       <Aux>
         <div className={'post-edit'}>
           {editorRedirect}
-          {EDITOR}
+          <EditorForm {...this.props} />
         </div>
       </Aux>
     );
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
   return {
-    selectedItem: state.admin[thisNameSpace].selectedItem,
-    loading: state.admin[thisNameSpace].loading,
-    error: state.admin[thisNameSpace].error,
-    isNew: state.admin[thisNameSpace].isNew,
-    redirectPath: state.admin[thisNameSpace].redirectPath,
-    loading: state.admin[thisNameSpace].loading,
-    error: state.admin[thisNameSpace].error,
-    notification: state.admin[thisNameSpace].notification
+    selectedItem: state.admin[props.nameSpace].selectedItem,
+    loading: state.admin[props.nameSpace].loading,
+    error: state.admin[props.nameSpace].error,
+    redirectPath: state.admin[props.nameSpace].redirectPath,
+    notification: state.admin[props.nameSpace].notification,
+    locked: state.admin[props.nameSpace].locked
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
     onGetData: (nameSpace, serviceName) =>
-      dispatch(commonActions.getData(nameSpace, serviceName)),
+      dispatch(adminActions.getData(nameSpace, serviceName)),
     onSetQuery: (nameSpace, serviceName, query) =>
-      dispatch(commonActions.setQuery(nameSpace, serviceName, query)),
+      dispatch(adminActions.setQuery(nameSpace, serviceName, query)),
     onUpdateItem: (nameSpace, serviceName, item, data) =>
-      dispatch(commonActions.updateItem(nameSpace, serviceName, item, data)),
+      dispatch(adminActions.updateItem(nameSpace, serviceName, item, data)),
     onCreateItem: (nameSpace, serviceName, data) =>
-      dispatch(commonActions.createItem(nameSpace, serviceName, data)),
+      dispatch(adminActions.createItem(nameSpace, serviceName, data)),
+    onCreateItemSuccess: (nameSpace, serviceName, post) =>
+      dispatch(adminActions.createItemSuccess(nameSpace, serviceName, post)),
     onSetNew: (nameSpace, serviceName, data) =>
-      dispatch(commonActions.setNew(nameSpace, serviceName, data))
+      dispatch(adminActions.setNew(nameSpace, serviceName, data)),
+    onSetLock: (nameSpace, serviceName, data) =>
+      dispatch(adminActions.setLock(nameSpace, serviceName, data)),
+    onEditorChanged: (nameSpace, serviceName, data) =>
+      dispatch(adminActions.editorChanged(nameSpace, serviceName, data))
   };
 };
 
-const WrappedWriteForm = Form.create({
-  mapPropsToFields(props) {
-    return {
-      title: Form.createFormField({
-        ...props.title,
-        value: props.selectedItem ? props.selectedItem.title : null
-      }),
-      body: Form.createFormField({
-        ...props.body,
-        value: props.selectedItem ? props.selectedItem.body : null
-      })
-    };
-  }
-})(adminEditor);
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(notificationHandler(WrappedWriteForm));
+)(notificationHandler(adminEditor));

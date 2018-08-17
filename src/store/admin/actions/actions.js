@@ -136,3 +136,21 @@ export const setNew = (nameSpace, serviceName) => {
     serviceName
   };
 };
+
+export const setLock = (nameSpace, serviceName, locked) => {
+  return {
+    type: adminActionTypes.SET_LOCK,
+    nameSpace,
+    serviceName,
+    locked
+  };
+};
+
+export const editorChanged = (nameSpace, serviceName, changedData) => {
+  return {
+    type: adminActionTypes.EDITOR_CHANGED,
+    nameSpace,
+    serviceName,
+    changedData
+  };
+};

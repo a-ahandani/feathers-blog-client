@@ -41,7 +41,41 @@ const navItems = [
     title: 'Users',
     icon: 'user',
     link: '/admin/users',
-    show: 'authenticated'
+    show: 'authenticated',
+    subMenu: [
+      {
+        title: 'Users',
+        icon: 'user',
+        link: '/admin/users',
+        show: 'authenticated'
+      },
+      {
+        title: 'Create',
+        icon: 'user-add',
+        link: '/admin/users/create',
+        show: 'authenticated'
+      }
+    ]
+  },
+  {
+    title: 'Files',
+    icon: 'user',
+    link: '/admin/files',
+    show: 'authenticated',
+    subMenu: [
+      {
+        title: 'Files',
+        icon: 'user',
+        link: '/admin/files',
+        show: 'authenticated'
+      },
+      {
+        title: 'Upload',
+        icon: 'user-add',
+        link: '/admin/files/upload',
+        show: 'authenticated'
+      }
+    ]
   },
   {
     title: 'Logout!',
@@ -67,7 +101,7 @@ const Sidebar = props => (
       <Navigation
         navData={navItems}
         isAuthenticated={props.isAuthenticated}
-        navMode="vertical"
+        navMode="inline"
         navTheme="dark"
       />
     </div>

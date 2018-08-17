@@ -36,7 +36,7 @@ export function* findDataSaga(payload) {
     yield put(
       adminActions.fetchDataStart(payload.nameSpace, payload.serviceName)
     );
-
+    //  const query = payload.query;
     const response = yield services[payload.serviceName].find({ query });
     yield put(
       adminActions.setPagination(payload.nameSpace, payload.serviceName, {
@@ -64,6 +64,7 @@ export function* findDataSaga(payload) {
 }
 
 export function* updateItemSaga(payload) {
+  console.log('update', payload);
   try {
     const response = yield services[payload.serviceName].update(
       payload.id,
@@ -114,6 +115,14 @@ export function* deleteItemSaga(payload) {
   try {
     const response = yield services[payload.serviceName].remove(
       payload.item.id
+    );
+
+    yield put(
+      adminActions.deleteItemSuccess(
+        payload.nameSpace,
+        payload.serviceName,
+        response
+      )
     );
   } catch (error) {
     yield put(

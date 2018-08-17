@@ -18,7 +18,12 @@ function createNamedWrapperReducer(reducerFunction, reducerName) {
 const index = combineReducers({
   posts: createNamedWrapperReducer(adminReducer, 'posts'),
   post: createNamedWrapperReducer(adminReducer, 'post'),
-  users: createNamedWrapperReducer(adminReducer, 'users')
+
+  users: createNamedWrapperReducer(adminReducer, 'users'),
+  user: createNamedWrapperReducer(adminReducer, 'user'),
+
+  files: createNamedWrapperReducer(adminReducer, 'files'),
+  file: createNamedWrapperReducer(adminReducer, 'file')
 });
 
 export default index;

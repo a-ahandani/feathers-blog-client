@@ -10,17 +10,11 @@ const initialState = {
     defaultPageSize: 10,
     current: 1
   },
-  query: {
-    $skip: 0,
-    $limit: 10,
-    $sort: {
-      createdAt: -1
-    }
-  },
+  query: {},
   loading: false,
   error: false,
-  notification: null,
-  isNew: false,
+  // notification: null,
+  locked: false,
   redirectPath: null
 };
 
@@ -31,7 +25,7 @@ const reducer = (state = initialState, action) => {
         ...state,
         loading: true,
         error: false,
-        notification: null,
+        // notification: null,
         redirectPath: null
       };
     case commonTypes.FIND_DATA_SUCCESS:
@@ -40,9 +34,8 @@ const reducer = (state = initialState, action) => {
         datasource: action.data,
         loading: false,
         error: false,
-        isNew: false,
-        redirectPath: null,
-        notification: null
+        redirectPath: null
+        // notification: null
       };
     case commonTypes.GET_DATA_SUCCESS:
       return {
@@ -50,15 +43,14 @@ const reducer = (state = initialState, action) => {
         selectedItem: action.data,
         loading: false,
         error: false,
-        isNew: false,
-        redirectPath: null,
-        notification: null
+        redirectPath: null
+        // notification: null
       };
     case commonTypes.SET_QUERY:
       return {
         ...state,
         query: action.query,
-        notification: null,
+        // notification: null,
         redirectPath: null
       };
     case commonTypes.CREATE_ITEM_SUCCESS:
@@ -71,23 +63,22 @@ const reducer = (state = initialState, action) => {
         selectedItem: action.item,
         loading: false,
         error: false,
-        redirectPath:
-          '/admin/' + action.serviceName + '/edit/' + action.item.id,
-        notification: {
-          type: 'success',
-          message: 'Item added!'
-        }
+        redirectPath: '/admin/' + action.serviceName + '/edit/' + action.item.id
+        // notification: {
+        //   type: "success",
+        //   message: action.nameSpace + " Item added!"
+        // }
       };
 
     case commonTypes.FETCH_DATA_FAILED:
       return {
         ...state,
         loading: false,
-        error: true,
-        notification: {
-          type: 'error',
-          message: action.error.message
-        }
+        error: true
+        // notification: {
+        //   type: "error",
+        //   message: action.nameSpace + " " + action.error.message
+        // }
       };
     case commonTypes.DELETE_ITEM_SUCCESS:
       const datasourceCopy = [...state.datasource];
@@ -101,11 +92,11 @@ const reducer = (state = initialState, action) => {
         ...state,
         datasource: updatedPosts,
         loading: false,
-        error: false,
-        notification: {
-          type: 'success',
-          message: 'Item deleted!'
-        }
+        error: false
+        // notification: {
+        //   type: "success",
+        //   message: action.nameSpace + " Item deleted!"
+        // }
       };
     case commonTypes.UPDATE_ITEM_SUCCESS:
       return {
@@ -113,12 +104,11 @@ const reducer = (state = initialState, action) => {
         selectedItem: action.item,
         loading: false,
         error: false,
-        isNew: false,
-        redirectPath: null,
-        notification: {
-          type: 'success',
-          message: 'Item updated!'
-        }
+        redirectPath: null
+        // notification: {
+        //   type: "success",
+        //   message: action.nameSpace + " Item updated!"
+        // }
       };
 
     case commonTypes.SET_NEW:
@@ -127,15 +117,36 @@ const reducer = (state = initialState, action) => {
         selectedItem: null,
         loading: false,
         error: false,
-        isNew: false,
-        redirectPath: null,
-        notification: null
+        redirectPath: null
+        // notification: null
+      };
+
+    case commonTypes.SET_LOCK:
+      return {
+        ...state,
+        locked: action.locked
+        // loading: false,
+        // error: false,
+        // redirectPath: null,
+        // notification: null
+      };
+    case commonTypes.EDITOR_CHANGED:
+      const changes = action.changedData[Object.keys(action.changedData)[0]];
+      const updatedSelectedItem = {
+        ...state.selectedItem
+      };
+      updatedSelectedItem[changes.name] = changes.value;
+
+      return {
+        ...state,
+        selectedItem: updatedSelectedItem
+        // notification: null
       };
     case commonTypes.SET_PAGINATION:
       return {
         ...state,
-        pagination: action.pagination,
-        notification: null
+        pagination: action.pagination
+        // notification: null
       };
     default:
       return state;
