@@ -1,8 +1,8 @@
-import * as commonTypes from "../actions/types";
+import * as commonTypes from '../actions/types';
 
 const initialState = {
-
   datasource: null,
+  selectedItem: null,
   notification: null,
   pagination: {
     total: null,
@@ -10,71 +10,78 @@ const initialState = {
     defaultPageSize: 10,
     current: 1
   },
-  query: {
-    $skip: 0,
-    $limit: 10,
-    $sort: {
-      "createdAt": -1
-    }
-  },
+  query: {},
   loading: false,
   error: false,
-  notification: null
-
+  // notification: null,
+  locked: false,
+  redirectPath: null
 };
 
 const reducer = (state = initialState, action) => {
-
   switch (action.type) {
-
     case commonTypes.FETCH_DATA_START:
       return {
         ...state,
         loading: true,
         error: false,
-        notification: null
+        // notification: null,
+        redirectPath: null
       };
-    case commonTypes.SET_DATA:
+    case commonTypes.FIND_DATA_SUCCESS:
       return {
         ...state,
         datasource: action.data,
         loading: false,
         error: false,
-        notification: null
+        redirectPath: null
+        // notification: null
+      };
+    case commonTypes.GET_DATA_SUCCESS:
+      return {
+        ...state,
+        selectedItem: action.data,
+        loading: false,
+        error: false,
+        redirectPath: null
+        // notification: null
       };
     case commonTypes.SET_QUERY:
-    console.log("reducer->",action.query)
       return {
         ...state,
         query: action.query,
-        notification: null
+        // notification: null,
+        redirectPath: null
       };
-    case commonTypes.SET_NEW_ITEM:
-      const updatePosts = [
-        action.item,
-        ...state.datasource
-      ];
+    case commonTypes.CREATE_ITEM_SUCCESS:
+      const updatePosts = state.datasource
+        ? [action.item, ...state.datasource]
+        : null;
       return {
         ...state,
         datasource: updatePosts,
+        selectedItem: action.item,
         loading: false,
         error: false,
-        notification: null
+        redirectPath: '/admin/' + action.serviceName + '/edit/' + action.item.id
+        // notification: {
+        //   type: "success",
+        //   message: action.nameSpace + " Item added!"
+        // }
       };
+
     case commonTypes.FETCH_DATA_FAILED:
       return {
         ...state,
         loading: false,
-        error: true,
-        notification: {
-          type: "error",
-          message: action.error.message
-        }
+        error: true
+        // notification: {
+        //   type: "error",
+        //   message: action.nameSpace + " " + action.error.message
+        // }
       };
     case commonTypes.DELETE_ITEM_SUCCESS:
-      const datasourceCopy = [
-        ...state.datasource
-      ];
+      const datasourceCopy = [...state.datasource];
       const updatedPosts = [];
       datasourceCopy.map((item, index) => {
         if (item.id !== action.item.id) {
@@ -85,23 +92,65 @@ const reducer = (state = initialState, action) => {
         ...state,
         datasource: updatedPosts,
         loading: false,
+        error: false
+        // notification: {
+        //   type: "success",
+        //   message: action.nameSpace + " Item deleted!"
+        // }
+      };
+    case commonTypes.UPDATE_ITEM_SUCCESS:
+      return {
+        ...state,
+        selectedItem: action.item,
+        loading: false,
         error: false,
-        notification: {
-          type: "success",
-          message: 'Item deleted!'
-        }
+        redirectPath: null
+        // notification: {
+        //   type: "success",
+        //   message: action.nameSpace + " Item updated!"
+        // }
+      };
+
+    case commonTypes.SET_NEW:
+      return {
+        ...state,
+        selectedItem: null,
+        loading: false,
+        error: false,
+        redirectPath: null
+        // notification: null
+      };
+
+    case commonTypes.SET_LOCK:
+      return {
+        ...state,
+        locked: action.locked
+        // loading: false,
+        // error: false,
+        // redirectPath: null,
+        // notification: null
+      };
+    case commonTypes.EDITOR_CHANGED:
+      const changes = action.changedData[Object.keys(action.changedData)[0]];
+      const updatedSelectedItem = {
+        ...state.selectedItem
+      };
+      updatedSelectedItem[changes.name] = changes.value;
+
+      return {
+        ...state,
+        selectedItem: updatedSelectedItem
+        // notification: null
       };
     case commonTypes.SET_PAGINATION:
       return {
         ...state,
-        pagination: action.pagination,
-        notification: null
+        pagination: action.pagination
+        // notification: null
       };
     default:
       return state;
   }
-
 };
-
 
 export default reducer;

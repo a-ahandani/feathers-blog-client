@@ -1,24 +1,23 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { Redirect } from "react-router-dom";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 
-import { Form, Icon, Input, Button, Checkbox } from "antd";
+import { Form, Icon, Input, Button, Checkbox } from 'antd';
 
-
-import classes from "./Auth.scss";
-import * as actions from "./store/actions/index";
-import { updateObject } from "../../shared/utility";
+import classes from './Auth.scss';
+import * as actions from './store/actions/index';
+import { updateObject } from '../../shared/utility';
 
 class Auth extends Component {
   state = {
     controls: {
       email: {
-        elementType: "input",
+        elementType: 'input',
         elementConfig: {
-          type: "email",
-          placeholder: "Mail Address"
+          type: 'email',
+          placeholder: 'Mail Address'
         },
-        value: "",
+        value: '',
         validation: {
           required: true,
           isEmail: true
@@ -26,12 +25,12 @@ class Auth extends Component {
         touched: false
       },
       password: {
-        elementType: "input",
+        elementType: 'input',
         elementConfig: {
-          type: "password",
-          placeholder: "Password"
+          type: 'password',
+          placeholder: 'Password'
         },
-        value: "",
+        value: '',
         validation: {
           required: true,
           minLength: 6
@@ -43,7 +42,7 @@ class Auth extends Component {
   };
 
   componentDidMount() {
-    if (this.props.authRedirectPath !== "/blog") {
+    if (this.props.authRedirectPath !== '/blog') {
       this.props.onSetAuthRedirectPath();
     }
   }
@@ -57,16 +56,20 @@ class Auth extends Component {
     this.setState({ controls: updatedControls });
   };
 
-  submitHandler = (event) => {
+  submitHandler = event => {
     event.preventDefault();
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.onAuth(this.state.controls.email.value, this.state.controls.password.value, this.state.isSignup);
+        this.props.onAuth(
+          this.state.controls.email.value,
+          this.state.controls.password.value,
+          this.state.isSignup
+        );
       }
     });
   };
 
-  switchAuthModeHandler = (event) => {
+  switchAuthModeHandler = event => {
     event.preventDefault();
     this.setState(prevState => {
       return { isSignup: !prevState.isSignup };
@@ -78,36 +81,32 @@ class Auth extends Component {
     const { getFieldDecorator } = this.props.form;
     let authRedirect = null;
     if (this.props.isAuthenticated) {
-      authRedirect = <Redirect to={this.props.authRedirectPath}/>;
+      authRedirect = <Redirect to={this.props.authRedirectPath} />;
     }
     return (
       <div className={'auth'}>
-
-        <Form
-          className={'forms'}
-          onSubmit={this.submitHandler}
-        >
+        <Form className={'forms'} onSubmit={this.submitHandler}>
           {authRedirect}
-          <FormItem
-            label="User Name:"
-          >
-            {getFieldDecorator("email", {
-              rules: [{ required: true, message: "Please input your username!" }]
+          <FormItem label="User Name:">
+            {getFieldDecorator('email', {
+              rules: [
+                { required: true, message: 'Please input your username!' }
+              ]
             })(
               <Input
                 placeholder="Username"
-                onChange={(event) => this.inputChangedHandler(event, "email")}/>
+                onChange={event => this.inputChangedHandler(event, 'email')}
+              />
             )}
-
           </FormItem>
-          <FormItem
-            label="Password"
-          >
-            {getFieldDecorator("password", {
-              rules: [{ required: true, message: "Please input your Password!" }]
+          <FormItem label="Password">
+            {getFieldDecorator('password', {
+              rules: [
+                { required: true, message: 'Please input your Password!' }
+              ]
             })(
               <Input
-                onChange={(event) => this.inputChangedHandler(event, "password")}
+                onChange={event => this.inputChangedHandler(event, 'password')}
                 type="password"
                 autoComplete="off"
                 placeholder="Password"
@@ -122,12 +121,12 @@ class Auth extends Component {
             >
               Login!
             </Button>
-            Or <a onClick={this.switchAuthModeHandler} href="#">SWITCH
-            TO {this.state.isSignup ? "SIGNIN" : "SIGNUP"}</a>
-
+            Or{' '}
+            <a onClick={this.switchAuthModeHandler} href="#">
+              SWITCH TO {this.state.isSignup ? 'SIGNIN' : 'SIGNUP'}
+            </a>
           </FormItem>
         </Form>
-
       </div>
     );
   }
@@ -144,12 +143,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAuth: (email, password, isSignup) => dispatch(actions.auth(email, password, isSignup)),
-    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath("/blog"))
+    onAuth: (email, password, isSignup) =>
+      dispatch(actions.auth(email, password, isSignup)),
+    onSetAuthRedirectPath: () => dispatch(actions.setAuthRedirectPath('/blog'))
   };
 };
 
 const WrappedAuthForm = Form.create()(Auth);
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(WrappedAuthForm);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(WrappedAuthForm);
